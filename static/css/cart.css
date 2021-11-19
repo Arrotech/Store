@@ -1,0 +1,19 @@
+body{
+  background-color: #efefef;
+}
+img {
+    max-width: 100%;
+    margin-bottom: 20px;
+    height: 150px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+
+footer {
+  width: 100%;
+}

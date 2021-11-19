@@ -1,0 +1,71 @@
+{% extends 'admin_dashboard_base.html' %}
+
+{% block content %}
+<main class="page-content">
+    <div class="container-fluid">
+
+        <form class="form-horizontal" action="{{url_for('store_v1.add_product')}}" method="POST"
+            enctype="multipart/form-data">
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend>PRODUCTS</legend>
+
+                {{ form.csrf_token }}
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
+                    <div class="col-md-4">
+                        {{ form.name(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="available_quantity">PRODUCT PRICE</label>
+                    <div class="col-md-4">
+                        {{ form.price(class="form-control")}}
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="available_quantity">QUANTITY</label>
+                    <div class="col-md-4">
+                        {{ form.stock(class="form-control")}}
+                    </div>
+                </div>
+
+
+                <!-- Textarea -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="product_description">PRODUCT DESCRIPTION</label>
+                    <div class="col-md-4">
+                        {{ form.description(class="form-control")}}
+                    </div>
+                </div>
+
+                <!-- File Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="filebutton">Product Image</label>
+                    <div class="col-md-4">
+                        {{ form.image(class="form-control-file")}}
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="singlebutton"></label>
+                    <div class="col-md-4">
+                        <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</main>
+
+{% endblock %}
