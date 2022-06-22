@@ -9,6 +9,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     UPLOADED_PHOTOS_DEST = 'images'
     SECRET_KEY = 'LICASsbvusLDSUAVBAVBUiivevpueBEVBPVB'
+    SESSION_COOKIE_SECURE = False
 
 
 class DevelopmentConfig(Config):
