@@ -8,7 +8,7 @@ app = create_app(config_name)
 
 @app.route('/')
 def index():
-    return redirect(url_for('store_v1.index'))
+    return redirect(url_for('store_v1.index', _external=True))
 
 if __name__ == '__main__':
     app.run()

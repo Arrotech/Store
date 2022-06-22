@@ -1,14 +1,15 @@
 from flask import Flask
 
 from instance.config import app_config
-from app.extensions import db, bootstrap
+from app.extensions import db, bootstrap, csrf
+from werkzeug.contrib.fixers import ProxyFix
 
 
 def create_app(config_name='production'):
     """Create and configure app."""
 
     app = Flask(__name__, instance_relative_config=True)
-
+    app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
 
@@ -16,6 +17,7 @@ def create_app(config_name='production'):
 
     db.init_app(app)
     bootstrap.init_app(app)
+    csrf.init_app(app)
 
     from app.api.v1 import store_v1
 

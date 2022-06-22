@@ -7,6 +7,11 @@ Arrotech-Store
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{url_for('.static', filename='css/layout.css')}}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 {% endblock %}
 
 
@@ -15,19 +20,24 @@ Arrotech-Store
 <div class="container">
     <div class="row">
         <div class="col-lg-3">
-            <h1 class="my-4">W<span class="text-warning">ea</span>r Sh<span class="text-warning">o</span>p</h1>
+            <h1 class="my-4">Gro<span class="text-warning">cer</span>y Sh<span class="text-warning">o</span>p</h1>
             <div class="list-group">
-                <a class="list-group-item text-dark" href="#!">Dresses</a>
-                <a class="list-group-item text-dark" href="#!">Shoes</a>
-                <a class="list-group-item text-dark" href="#!">Trousers & Skirts</a>
+                <a class="list-group-item text-dark" href="#!">Groceries</a>
+                <a class="list-group-item text-dark" href="#!">Cereals</a>
+            </div>
+            <div class="list-group" style="margin-top: 20px; font-size: 16px;">
+                <a class="list-group-item" href="{{ url_for('store_v1.cart')}}"
+                    style="color: orange !important; text-decoration: none;"><i
+                        class="glyphicon glyphicon-shopping-cart"></i> View cart</a>
             </div>
         </div>
-        <div class="col-lg-9">
+        <div class="col-lg-9" style="background-color: #fff !important; margin-top: 20px; padding: 8px; border-radius: 5px;">
             <div class="row">
                 {% for product in products %}
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card mr-5 h-100 shadow p-3 mb-5 bg-body rounded">
                         <a href="{{ url_for('store_v1.product', id=product.id)}}"><img class="card-img-top rounded"
+                                style="height: 150px; border-radius: 5px;"
                                 src="{{url_for('.static', filename='images/products/' ~ product.image)}}"
                                 alt="..." /></a>
                         <div class="card-body">
@@ -39,25 +49,30 @@ Arrotech-Store
                             <h5 class="text-warning">&dollar;{{ product.price/100 }}</h5>
                             <p class="card-text">{{ product.description }}</p>
                         </div>
-                        <div class="panel-footer row card-body">
-                            <li class="d-flex justify-content-between align-items-center list-group-item">
+                        <div class="panel-footer row card-body"
+                            style="background-color: #fff;width: 100% !important; margin: 0 auto;
+                            float: none;
+                            margin-bottom: 10px;">
+                            <li class="d-flex justify-content-between align-items-center list-group-item" style="width: 100%;">
                                 {% if product.stock > 0%}
                                 <a href="{{ url_for('store_v1.product', id=product.id)}}"><button
-                                        class="btn btn-warning btn-sm text-light">View</button></a>
+                                        class="btn btn-warning btn-sm text-light" style="width: 70px;">View</button></a>
                                 {% endif %}
                                 {% if product.stock > 0%}
-                                <a href="{{ url_for('store_v1.quick_add', id=product.id)}}"><button
-                                        class="btn btn-dark btn-sm"><i class="glyphicon glyphicon-shopping-cart"></i> Add to Cart</button></a>
+                                <a href="{{ url_for('store_v1.quick_add', id=product.id)}}" style="margin-left: 10px;"><button
+                                        class="btn btn-dark btn-sm"><i class="glyphicon glyphicon-shopping-cart"></i>
+                                        Add to Cart</button></a>
                                 {% endif %}
                             </li>
                         </div><!-- end panel-footer -->
 
-                        <div class="card-footer"><small class="text-warning">★ ★ ★ ★ ☆</small></div>
+                        <div class="card-footer" style="background-color: #fff;"><small class="text-warning">★ ★ ★ ★ ☆</small></div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

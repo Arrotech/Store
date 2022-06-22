@@ -1,0 +1,116 @@
+version: '3.7'
+
+x-database-variables:
+  &database-variables
+  POSTGRES_DB: "${POSTGRES_DB}"
+  POSTGRES_USER: "${POSTGRES_USER}"
+  POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+  PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
+  PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
+  PGADMIN_LISTEN_PORT: "${PGADMIN_LISTEN_PORT}"
+
+x-app-variables:
+  &app-variables
+  <<: *database-variables
+  DB_HOST: "${DB_HOST}"
+  DATABASE_URI: "${DATABASE_URI}"
+  RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER}"
+  RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASS}"
+
+services:
+  web:
+    build: .
+    image: store_starter_template:1.0
+    container_name: web
+    command: /start
+    depends_on:
+      - rabbit
+      - redis
+      - db
+    environment: *app-variables
+    networks:
+      - frontend
+      - backend
+    expose:
+      - 5000
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    restart: always
+
+  db:
+    environment: *database-variables
+    image: postgres:13-alpine
+    container_name: db
+    networks:
+      - backend
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db_migrate:
+    image: store_starter_template:1.0
+    container_name: db_migrate
+    command: python manage.py db upgrade
+    environment: *app-variables
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4:6.2
+    container_name: pgadmin
+    restart: unless-stopped
+    environment: *database-variables
+    ports:
+      - "8080:80"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  nginx:
+    build: ./nginx
+    image: reverse_proxy_nginx
+    container_name: nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+    networks:
+      - frontend
+    environment:
+      - SERVER_NAME=3.135.209.221
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -O /dev/null http://localhost || exit 1"
+        ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  frontend:
+    name: custom_frontend
+    driver: bridge
+  backend:
+    name: custom_backend
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
