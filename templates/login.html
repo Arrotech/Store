@@ -1,0 +1,62 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center align-items-center h-100" style="margin: 7% auto;">
+    <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3 shadow-lg p-3 mb-5 bg-white rounded">
+        <form class="form-horizontal" action="{{url_for('store_v1.login')}}" method="POST"
+            enctype="multipart/form-data">
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend style="text-align: center;">Login Up</legend>
+
+                {{ form.csrf_token }}
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="email">Email</label>
+                    <div class="col-md-12">
+                        {{ form.email(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="password">Password</label>
+                    <div class="col-md-12">
+                        {{ form.password(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="password">Remember me</label>
+                    <div class="col-md-12">
+                        {{ form.remember_me}}
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="singlebutton"></label>
+                    <div class="col-md-12">
+                        <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <p class="text-muted">Don't have an account? <a href="{{url_for('store_v1.signup')}}"><span
+                                    class="text-info">Sign Up</span></a></p>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

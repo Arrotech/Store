@@ -32,6 +32,8 @@
                             <th scope="col">#</th>
                             <th scope="col">REF</th>
                             <th scope="col">Customer</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone</th>
                             <th scope="col">Total</th>
                             <th scope="col">Status</th>
                         </tr>
@@ -42,6 +44,8 @@
                             <td>{{ order.id }}</td>
                             <td>{{ order.reference }}</td>
                             <td>{{ order.first_name + ' ' + order.last_name }}</td>
+                            <td>{{ order.email }}</td>
+                            <td>{{ order.phone_number }}</td>
                             <td>&dollar;{{ order.order_total() / 100 }}</td>
                             <td>{{ order.status }}</td>
                         </tr>
