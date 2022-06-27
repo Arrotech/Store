@@ -1,7 +1,23 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, TextAreaField, HiddenField, SelectField
+from wtforms import StringField, IntegerField, TextAreaField, HiddenField, SelectField, BooleanField
 from flask_wtf.file import FileField, FileAllowed
 from flask_uploads import IMAGES
+
+
+class UserForm(FlaskForm):
+    first_name = StringField('First Name')
+    middle_name = StringField('Middle Name')
+    last_name = StringField('Last Name')
+    email = StringField('Email')
+    password = StringField('Password')
+    confirm_password = StringField('Confirm Password')
+    phone_number = StringField('Phone Number')
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Email')
+    password = StringField('Password')
+    remember_me = BooleanField('Remember Me')
 
 
 class AddProduct(FlaskForm):

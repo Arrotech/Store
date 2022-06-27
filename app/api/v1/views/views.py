@@ -3,6 +3,7 @@ import random
 import os
 from os import path
 from flask import render_template, redirect, url_for, session
+from flask_login import current_user
 
 from app.api.v1 import store_v1
 from app.api.v1.forms.forms import AddProduct, AddToCart, Checkout
@@ -15,16 +16,24 @@ from app.api.v1.models.models import Product
 def index():
     """Home page."""
     products = Product.query.all()
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            return render_template('index.html', products=products, first_name=current_user.first_name)
+        return redirect(url_for('store_v1.dashboard'))
     return render_template('index.html', products=products)
 
 
 @store_v1.route('/dashboard')
 def dashboard():
     """Home page."""
-    products = Product.query.all()
-    products_in_stock = Product.query.filter(Product.stock > 0).count()
-    orders = Order.query.all()
-    return render_template('dashboard.html', products=products, products_in_stock=products_in_stock, orders=orders)
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            products = Product.query.all()
+            products_in_stock = Product.query.filter(Product.stock > 0).count()
+            orders = Order.query.all()
+            return render_template('dashboard.html', products=products, products_in_stock=products_in_stock, orders=orders, first_name=current_user.first_name)
+        return redirect(url_for('store_v1.index'))
+    return redirect(url_for('store_v1.login'))
 
 
 @store_v1.route('/add-product', methods=['POST', 'GET'])
@@ -91,34 +100,35 @@ def remove_from_cart(index):
 @store_v1.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     """Checkout page."""
-    form = Checkout()
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            form = Checkout()
+            products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
+            if form.validate_on_submit():
+                order = Order()
+                form.populate_obj(order)
+                order.reference = ''.join([random.choice('ABCDE') for _ in range(5)])
+                order.status = 'PENDING'
 
-    products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
+                for product in products:
+                    order_item = OrderItem(
+                        quantity=product['quantity'],
+                        product_id=product['id']
+                    )
+                    order.items.append(order_item)
 
-    if form.validate_on_submit():
+                    product = Product.query.filter_by(id=product['id']).update(
+                        {"stock": Product.stock - product['quantity']})
 
-        order = Order()
-        form.populate_obj(order)
-        order.reference = ''.join([random.choice('ABCDE') for _ in range(5)])
-        order.status = 'PENDING'
+                db.session.add(order)
+                db.session.commit()
+                session['cart'] = []
+                session.modified = True
 
-        for product in products:
-            order_item = OrderItem(
-                quantity=product['quantity'],
-                product_id=product['id']
-            )
-            order.items.append(order_item)
+                return redirect(url_for('store_v1.index'))
 
-            product = Product.query.filter_by(id=product['id']).update({"stock": Product.stock - product['quantity']})
-
-        db.session.add(order)
-        db.session.commit()
-        session['cart'] = []
-        session.modified = True
-
-        return redirect(url_for('store_v1.index'))
-
-    return render_template('checkout.html', form=form, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total)
+            return render_template('checkout.html', form=form, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, first_name=current_user.first_name, last_name=current_user.last_name, email=current_user.email, phone_number=current_user.phone_number)
+    return redirect(url_for('store_v1.login'))
 
 
 @store_v1.route('/view-order/<order_id>')

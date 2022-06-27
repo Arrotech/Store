@@ -10,6 +10,7 @@ class Config(object):
     UPLOADED_PHOTOS_DEST = 'images'
     SECRET_KEY = 'LICASsbvusLDSUAVBAVBUiivevpueBEVBPVB'
     SESSION_COOKIE_SECURE = False
+    JWT_SECRET_KEY= os.environ.get('JWT_SECRET_KEY')
 
 
 class DevelopmentConfig(Config):

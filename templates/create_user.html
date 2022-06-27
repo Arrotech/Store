@@ -1,0 +1,97 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center align-items-center h-100">
+    <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3 shadow-lg p-3 mb-5 bg-white rounded">
+        <form class="form-horizontal" action="{{url_for('store_v1.signup')}}" method="POST"
+            enctype="multipart/form-data">
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend style="text-align: center;">Sign Up</legend>
+
+                {{ form.csrf_token }}
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="first_name">First Name</label>
+                    <div class="col-md-12">
+                        {{ form.first_name(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="middle_name">Middle Name</label>
+                    <div class="col-md-12">
+                        {{ form.middle_name(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="last_name">Last Name</label>
+                    <div class="col-md-12">
+                        {{ form.last_name(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="email">Email</label>
+                    <div class="col-md-12">
+                        {{ form.email(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="password">Password</label>
+                    <div class="col-md-12">
+                        {{ form.password(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="confirm_password">Confirm Password</label>
+                    <div class="col-md-12">
+                        {{ form.confirm_password(class="form-control")}}
+
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="phone_number">Phone Number</label>
+                    <div class="col-md-12">
+                        {{ form.phone_number(class="form-control")}}
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-6 control-label" for="singlebutton"></label>
+                    <div class="col-md-12">
+                        <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <p class="text-muted">Already have an account? <a href="{{url_for('store_v1.login')}}"><span class="text-info">Login</span></a></p>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

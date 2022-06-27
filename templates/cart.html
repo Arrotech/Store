@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'home.html' %}
 
 {% block title %}
 Cart
 {% endblock %}
 {% block content %}
 {% if products|length > 0%}
-<div class="container bg-light">
-    <h4 class="bg-light mt-4 p-2">Your cart charges</h4>
+<div class="container shadow p-3 mb-5 bg-white rounded">
+    <h4 class="mt-4 p-2">Your cart charges</h4>
     <div class="panel panel-primary">
         <div class="panel-body">
             <div class="row">
@@ -27,8 +27,7 @@ Cart
                             <p>&dollar;{{ product['price'] / 100 }}</p>
                             <br />
                             <p><a href="{{ url_for('store_v1.remove_from_cart', index=product['index'])}}">
-                                    <button type="button" class="btn btn-danger btn-xs"><i
-                                            class="glyphicon glyphicon-trash"></i></button></a>
+                                    <button type="button" class="btn text-danger btn-xs"><i class="fa fa-trash"></i></button></a>
                             </p>
                         </div>
                         <div class="col-lg-2">
