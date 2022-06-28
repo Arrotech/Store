@@ -1,0 +1,7 @@
+Your account was created successfully.
+Please click the link below to confirm your account.
+  
+{{ confirm_url }}
+ 
+--
+Questions? Comments? Email arrotechdesign@gmail.com.

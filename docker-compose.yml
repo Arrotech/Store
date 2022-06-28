@@ -103,6 +103,88 @@ services:
       timeout: 10s
       retries: 3
 
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  rabbit:
+    image: rabbitmq:3.9.11-management-alpine
+    hostname: rabbit
+    container_name: rabbit
+    environment: *app-variables
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/mnesia # mounting on linux
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", '-q', "ping" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  celery_worker:
+    build: .
+    image: store_celery_worker
+    container_name: celery_worker
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    environment: *app-variables
+    depends_on:
+      - rabbit
+      - redis
+      - db
+    networks:
+      - backend
+
+  celery_beat:
+    build: .
+    image: store_celery_beat
+    container_name: celery_beat
+    command: /start-celerybeat
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    environment: *app-variables
+    depends_on:
+      - rabbit
+      - redis
+      - db
+    networks:
+      - backend
+
+  flower:
+    build: .
+    image: flask_celery_flower
+    container_name: flower
+    command: /start-flower
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    environment: *app-variables
+    ports:
+      - 5557:5555
+    depends_on:
+      - rabbit
+      - redis
+      - db
+    networks:
+      - backend
+
 networks:
   frontend:
     name: custom_frontend
@@ -113,4 +195,6 @@ networks:
 
 volumes:
   postgres-data:
+    driver: local
+  rabbitmq:
     driver: local

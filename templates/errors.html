@@ -1,0 +1,14 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center align-items-center h-100" style="margin: 7% auto;">
+    <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3 shadow-lg p-3 mb-5 bg-white rounded">
+        <h1>{{h1}}</h1>
+        <p>{{p}}</p>
+        {% if redirect_url %}
+        <p><a href="{{ redirect_url }}">Proceed to Login</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

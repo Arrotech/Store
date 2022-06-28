@@ -1,0 +1,7 @@
+Your order was created successfully.
+Please click the link below to return to the site.
+  
+{{ confirm_url }}
+ 
+--
+Questions? Comments? Email arrotechdesign@gmail.com.

@@ -1,7 +1,7 @@
 from flask import Flask
 
 from instance.config import app_config
-from app.extensions import db, bootstrap, csrf, jwtmanager, login_manager
+from app.extensions import db, bootstrap, csrf, jwtmanager, login_manager, mail
 
 
 def create_app(config_name='production'):
@@ -18,6 +18,7 @@ def create_app(config_name='production'):
     csrf.init_app(app)
     jwtmanager.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
 
     from app.api.v1 import store_v1
 

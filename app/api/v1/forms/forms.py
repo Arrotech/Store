@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, TextAreaField, HiddenField, SelectField, BooleanField
+from wtforms import StringField, IntegerField, TextAreaField, HiddenField, SelectField, BooleanField, PasswordField
 from flask_wtf.file import FileField, FileAllowed
 from flask_uploads import IMAGES
 
@@ -9,15 +9,23 @@ class UserForm(FlaskForm):
     middle_name = StringField('Middle Name')
     last_name = StringField('Last Name')
     email = StringField('Email')
-    password = StringField('Password')
-    confirm_password = StringField('Confirm Password')
+    password = PasswordField('Password')
+    confirm_password = PasswordField('Confirm Password')
     phone_number = StringField('Phone Number')
 
 
 class LoginForm(FlaskForm):
     email = StringField('Email')
-    password = StringField('Password')
+    password = PasswordField('Password')
     remember_me = BooleanField('Remember Me')
+
+
+class PasswordResetEmailForm(FlaskForm):
+    email = StringField('Email')
+
+class PasswordResetForm(FlaskForm):
+    password = PasswordField('Password')
+    confirm_password = PasswordField('Confirm Password')
 
 
 class AddProduct(FlaskForm):

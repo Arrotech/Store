@@ -9,7 +9,7 @@
             <fieldset>
 
                 <!-- Form Name -->
-                <legend style="text-align: center;">Login Up</legend>
+                <legend style="text-align: center;">Login</legend>
 
                 {{ form.csrf_token }}
 
@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label class="col-md-6 control-label" for="password">Password</label>
                     <div class="col-md-12">
-                        {{ form.password(class="form-control")}}
+                        {{ form.password(class="form-control", type="password")}}
 
                     </div>
                 </div>
@@ -44,6 +44,14 @@
                     <label class="col-md-6 control-label" for="singlebutton"></label>
                     <div class="col-md-12">
                         <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <p class="text-muted">Forgot password? <a href="{{url_for('store_v1.reset_password')}}"><span
+                                    class="text-info">Reset</span></a></p>
                     </div>
                 </div>
 
