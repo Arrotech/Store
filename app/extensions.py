@@ -3,7 +3,9 @@ from flask_bootstrap import Bootstrap
 from flask_wtf import CsrfProtect
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
+from flask_mail import Mail
 
+mail = Mail()
 login_manager = LoginManager()
 db = SQLAlchemy()
 bootstrap = Bootstrap()

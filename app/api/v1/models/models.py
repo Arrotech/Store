@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
     middle_name = db.Column(db.String(255), nullable=True)
     last_name = db.Column(db.String(255), nullable=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
+    email_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     password = db.Column(db.String(255), nullable=False)
     phone_number = db.Column(db.String(255), nullable=True, unique=True)
     role = db.Column(db.String(255), nullable=False, default="user")

@@ -4,12 +4,16 @@ import os
 from os import path
 from flask import render_template, redirect, url_for, session
 from flask_login import current_user
+from arrotechtools import ErrorHandler
 
 from app.api.v1 import store_v1
 from app.api.v1.forms.forms import AddProduct, AddToCart, Checkout
 from app.api.v1.models.models import Product, Order, OrderItem
 from app.extensions import db
 from app.api.v1.models.models import Product
+from app.api.v1.services.mail import send_email
+from utils.utils import default_encode_token, generate_url
+
 
 
 @store_v1.route('/home')
@@ -39,17 +43,21 @@ def dashboard():
 @store_v1.route('/add-product', methods=['POST', 'GET'])
 def add_product():
     """Add a new product."""
-    form = AddProduct()
-    if form.validate_on_submit():
-        picture_file = save_picture(form.image.data)
-        product = Product(name=form.name.data, price=form.price.data,
-                          stock=form.stock.data, description=form.description.data, image=picture_file)
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            form = AddProduct()
+            if form.validate_on_submit():
+                picture_file = save_picture(form.image.data)
+                product = Product(name=form.name.data, price=form.price.data,
+                                stock=form.stock.data, description=form.description.data, image=picture_file)
 
-        db.session.add(product)
-        db.session.commit()
+                db.session.add(product)
+                db.session.commit()
 
+                return redirect(url_for('store_v1.index'))
+            return render_template('add_product.html', form=form)
         return redirect(url_for('store_v1.index'))
-    return render_template('add_product.html', form=form)
+    return redirect(url_for('store_v1.login'))
 
 
 @store_v1.route('/product/<id>', methods=['POST', 'GET'])
@@ -102,32 +110,48 @@ def checkout():
     """Checkout page."""
     if current_user.is_authenticated:
         if current_user.role == 'user':
-            form = Checkout()
-            products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
-            if form.validate_on_submit():
-                order = Order()
-                form.populate_obj(order)
-                order.reference = ''.join([random.choice('ABCDE') for _ in range(5)])
-                order.status = 'PENDING'
+            if current_user.email_confirmed == True:
+                form = Checkout()
+                products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
+                if form.validate_on_submit():
+                    order = Order()
+                    form.populate_obj(order)
+                    order.reference = ''.join(
+                        [random.choice('ABCDE') for _ in range(5)])
+                    order.status = 'PENDING'
 
-                for product in products:
-                    order_item = OrderItem(
-                        quantity=product['quantity'],
-                        product_id=product['id']
-                    )
-                    order.items.append(order_item)
+                    for product in products:
+                        order_item = OrderItem(
+                            quantity=product['quantity'],
+                            product_id=product['id']
+                        )
+                        order.items.append(order_item)
 
-                    product = Product.query.filter_by(id=product['id']).update(
-                        {"stock": Product.stock - product['quantity']})
+                        product = Product.query.filter_by(id=product['id']).update(
+                            {"stock": Product.stock - product['quantity']})
 
-                db.session.add(order)
-                db.session.commit()
-                session['cart'] = []
-                session.modified = True
+                    db.session.add(order)
+                    db.session.commit()
+                    session['cart'] = []
+                    session.modified = True
+                    token = default_encode_token(
+                        current_user.email, salt='email-confirm-key')
+                    confirm_url = generate_url(
+                        'store_v1.login', token=token)
+                    send_email.delay('Order Placed Successfully',
+                                    sender='arrotechdesign@gmail.com',
+                                    recipients=[current_user.email],
+                                    text_body=render_template(
+                                        'order_successfully_placed.txt', confirm_url=confirm_url),
+                                    html_body=render_template('order_successfully_placed.html',
+                                                            confirm_url=confirm_url))
 
-                return redirect(url_for('store_v1.index'))
+                    return redirect(url_for('store_v1.index'))
 
-            return render_template('checkout.html', form=form, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, first_name=current_user.first_name, last_name=current_user.last_name, email=current_user.email, phone_number=current_user.phone_number)
+                return render_template('checkout.html', form=form, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, first_name=current_user.first_name, last_name=current_user.last_name, email=current_user.email, phone_number=current_user.phone_number)
+            h1 = "Bad request"
+            p = "Please confirm your email address first before you checkout this order."
+            return render_template('errors.html', h1=h1, p=p)
     return redirect(url_for('store_v1.login'))
 
 

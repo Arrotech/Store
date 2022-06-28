@@ -30,6 +30,19 @@ COPY ./start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
+COPY ./celery/worker/start /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker
+RUN chmod +x /start-celeryworker
+
+COPY ./celery/beat/start /start-celerybeat
+RUN sed -i 's/\r$//g' /start-celerybeat
+RUN chmod +x /start-celerybeat
+
+COPY ./celery/flower/start /start-flower
+RUN sed -i 's/\r$//g' /start-flower
+RUN chmod +x /start-flower
+
+
 # ENV PYTHONPATH="${PYTHONPATH}:/app/dependencies"
 
 ENTRYPOINT ["/entrypoint"]
