@@ -1,7 +1,52 @@
+import os
 from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from app.extensions import login_manager
+from app.extensions import login
+from app.api.v1.views.search import add_to_index, remove_from_index, query_index
+
+
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
 
 
 class User(UserMixin, db.Model):
@@ -15,7 +60,11 @@ class User(UserMixin, db.Model):
     email_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     password = db.Column(db.String(255), nullable=False)
     phone_number = db.Column(db.String(255), nullable=True, unique=True)
+    avatar = db.Column(db.String(100), nullable=True,
+                       default=os.environ.get('AWS_DOMAIN')+"3213f4779272f3a2f4b9c137162cba84.png")
     role = db.Column(db.String(255), nullable=False, default="user")
+    orders = db.relationship(
+        'Order', backref='user', lazy=True,  passive_deletes=True)
 
     def __init__(self, first_name, middle_name, last_name, email, password, phone_number):
         super().__init__()
@@ -31,21 +80,25 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password, password)
 
 
-@login_manager.user_loader
+@login.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
 
-class Product(db.Model):
+class Product(SearchableMixin, db.Model):
     """Add Product Model."""
+
+    __searchable__ = ['name']
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
+    category = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     stock = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(500), nullable=False)
     image = db.Column(db.String(100), nullable=False)
-    orders = db.relationship('OrderItem', backref='product', lazy=True)
+    orders = db.relationship(
+        'OrderItem', backref='product', lazy=True,  passive_deletes=True)
 
 
 class Order(db.Model):
@@ -61,9 +114,12 @@ class Order(db.Model):
     city = db.Column(db.String(100))
     state = db.Column(db.String(20))
     country = db.Column(db.String(20))
-    status = db.Column(db.String(10))
+    status = db.Column(db.String(10), nullable=False, default="Pending")
     payment_type = db.Column(db.String(10))
-    items = db.relationship('OrderItem', backref='order', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete="CASCADE"), nullable=False)
+    items = db.relationship('OrderItem', backref='order',
+                            lazy=True, cascade="all, delete", passive_deletes=True)
 
     def order_total(self):
         """Calculate the order total."""
@@ -79,6 +135,8 @@ class OrderItem(db.Model):
     """Order Item Model."""
 
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    order_id = db.Column(db.Integer, db.ForeignKey(
+        'order.id', ondelete="CASCADE"), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey(
+        'product.id', ondelete="CASCADE"), nullable=False)
     quantity = db.Column(db.Integer)

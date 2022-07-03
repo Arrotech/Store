@@ -1,0 +1,97 @@
+{% extends 'admin_dashboard_base.html' %}
+
+{% block content %}
+<main class="page-content">
+    <div class="container-fluid">
+        {% if success_message %}
+        <div class="alert alert-success" role="alert">
+            {{success_message}}
+        </div>
+        {% endif %}
+        <form class="form-horizontal" action="{{url_for('store_v1.update_profile', email=user.email)}}" method="POST"
+            enctype="multipart/form-data">
+            {{ update_profile_form.csrf_token }}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-sidebar">
+                        <div class="profile-userpic">
+                            <img src="{{user.avatar}}" class="img-responsive" alt=""
+                                style="height: 100px; width: 100px;">
+                        </div>
+                        <div class="form-group mt-2">
+                            {{ update_profile_form.avatar(class="form-control-file")}}
+                        </div>
+                        <div class="profile-usertitle-name mt-2">
+                            {{user.first_name}} {{user.middle_name}}
+                        </div>
+                        <div class="profile-usermenu">
+                            <ul class="nav">
+                                <li class="active">
+                                    <a href="#">
+                                        <i class="glyphicon glyphicon-home"></i>
+                                        Overview </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="portlet light bordered">
+                            <div>
+                                <div class="margin-top-20 profile-desc-link">
+                                    <i class="fa fa-envelope" style="color:#EF7921;"></i>
+                                    <a href="https://www.twitter.com/jasondavisfl/"
+                                        class="text-muted">{{user.email}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="profile-content">
+                        <form class="form-horizontal" action="{{url_for('store_v1.update_profile', email=user.email)}}"
+                            method="POST" enctype="multipart/form-data">
+                            <legend>PROFILE</legend>
+
+                            <div class="form-group">
+                                <label for="first_name">First
+                                    Name</label>
+                                <div>
+                                    {{ update_profile_form.first_name(class="form-control", value=user.first_name)
+                                    }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="middle_name">Middle
+                                    Name</label>
+                                <div>
+                                    {{ update_profile_form.middle_name(class="form-control",
+                                    value=user.middle_name)}}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <div>
+                                    {{ update_profile_form.last_name(class="form-control",
+                                    value=user.last_name)}}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <div>
+                                    {{ update_profile_form.email(class="form-control",
+                                    value=user.email)}}
+                                </div>
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="singlebutton"></label>
+                        <div>
+                            <button id="singlebutton" name="singlebutton"
+                                class="btn btn-info text-light">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </form>
+    </div>
+</main>
+{% endblock %}

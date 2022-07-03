@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="product_name">First Name</label>
                         <div class="col-md-4">
-                            {{ form.first_name(class="form-control", readonly="readonly", value=first_name) }}
+                            {{ form.first_name(class="form-control", readonly="readonly", value=user.first_name) }}
                         </div>
                     </div>
 
@@ -25,7 +25,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="product_name">Last Name</label>
                         <div class="col-md-4">
-                            {{ form.last_name(class="form-control", readonly="readonly", value=last_name) }}
+                            {{ form.last_name(class="form-control", readonly="readonly", value=user.last_name) }}
                         </div>
                     </div>
 
@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="available_quantity">Phone Number</label>
                         <div class="col-md-4">
-                            {{ form.phone_number(class="form-control", readonly="readonly", value=phone_number) }}
+                            {{ form.phone_number(class="form-control", readonly="readonly", value=user.phone_number) }}
                         </div>
                     </div>
 
@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="available_quantity">Email</label>
                         <div class="col-md-4">
-                            {{ form.email(class="form-control", readonly="readonly", value=email) }}
+                            {{ form.email(class="form-control", readonly="readonly", value=user.email) }}
                         </div>
                     </div>
 
@@ -86,6 +86,13 @@
                         <label class="col-md-4 control-label" for="product_description">Payment Type</label>
                         <div class="col-md-4">
                             {{ form.payment_type(class="form-control")}}
+                        </div>
+                    </div>
+
+                    <!-- Textarea -->
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            {{ form.user_id(class="form-control", readonly="readonly", value=user.id)}}
                         </div>
                     </div>
 
