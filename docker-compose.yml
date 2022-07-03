@@ -27,6 +27,7 @@ services:
       - rabbit
       - redis
       - db
+      - elasticsearch
     environment: *app-variables
     networks:
       - frontend
@@ -184,6 +185,31 @@ services:
       - db
     networks:
       - backend
+
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.3.1
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    networks:
+      - frontend
+      - backend
+    ports:
+      - 9200:9200
+
+  kibana:
+    container_name: kb-container
+    image: docker.elastic.co/kibana/kibana:8.3.1
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
 
 networks:
   frontend:

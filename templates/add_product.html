@@ -3,7 +3,16 @@
 {% block content %}
 <main class="page-content">
     <div class="container-fluid">
-
+        {% if success_message %}
+        <div class="alert alert-success">
+            {{ success_message }}
+        </div>
+        {% endif %}
+        {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+        {% endif %}
         <form class="form-horizontal" action="{{url_for('store_v1.add_product')}}" method="POST"
             enctype="multipart/form-data">
             <fieldset>
@@ -18,7 +27,14 @@
                     <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
                     <div class="col-md-4">
                         {{ form.name(class="form-control")}}
+                    </div>
+                </div>
 
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="product_category">PRODUCT CATEGORY</label>
+                    <div class="col-md-4">
+                        {{ form.category(class="form-control")}}
                     </div>
                 </div>
 

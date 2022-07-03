@@ -19,9 +19,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('.static', filename='js/bootstrap.bundle.min.js') }}"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+        <link rel="stylesheet" href="{{url_for('.static', filename='css/product_detail.css')}}">
 
 </head>
 
@@ -39,25 +45,13 @@
                         <a class="nav-link active text-light" aria-current="page"
                             href="{{url_for('store_v1.index')}}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light">Contact</a>
-                    </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
                     <a href="{{ url_for('store_v1.cart')}}" style="color: orange !important; text-decoration: none;"><i
                             class="fa fa-shopping-cart" aria-hidden="true"></i> View cart</a>
                 </form>
                 <form class="form-inline my-2 my-lg-0 ml-4">
-                    {% if first_name %}
+                    {% if user %}
                     <!-- Example single danger button -->
                     <a class="text-warning" href="{{ url_for('store_v1.logout')}}">Logout</a>
                     {% else %}

@@ -1,0 +1,81 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="col-lg-9 shadow p-3 mb-5 bg-white rounded"
+    style="background-color: #fff !important; margin-top: 96px; padding: 8px; border-radius: 5px;">
+    <div class="row p-3">
+        {% for order_item in order_items %}
+        {% for product in products %}
+        {% if product.id == order_item.product_id %}
+        {% for order in orders %}
+        {% if order.id == order_item.order_id and order.user_id == user.id %}
+        <div class="card w-100 mb-5">
+            <h5 class="card-header"># {{product.id}}</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="{{product.image}}"
+                            alt="Product Image" class="card-img-top"
+                            style="height: 100px; width: 100px; border-radius: 5px !important;">
+                    </div>
+                    <div class="col-md-7">
+                        <h5 class="card-title">{{product.name}}</h5>
+                        <p class="card-text text-muted">{{product.description|truncate(15)}}</p>
+                        {% if order.status == 'Pending' %}
+                        <td><a href="#" class=" bg-warning text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Complete' %}
+                        <td><a href="#" class=" bg-success text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Declined' %}
+                        <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Returned' %}
+                        <td><a href="#" class=" bg-info text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Cancelled' %}
+                        <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'On Hold' %}
+                        <td><a href="#" class=" bg-warning text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Shipped' %}
+                        <td><a href="#" class="text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal"
+                                style="cursor: pointer; text-decoration: none; background-color:#5D3FD3">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'In Transit' %}
+                        <td><a href="#" class=" bg-info text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Expired' %}
+                        <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% elif order.status == 'Fraud' %}
+                        <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                                data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                                order.status }}</a></td>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <a href="#" class="text-warning p-1 rounded">More information</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

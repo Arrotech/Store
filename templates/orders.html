@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="col-lg-9 shadow p-3 mb-5 bg-white rounded"
+    style="background-color: #fff !important; margin-top: 96px; padding: 8px; border-radius: 5px;">
+    <div class="row p-3">
+        {% for order in orders %}
+        <div class="card w-100 mb-5">
+            <h5 class="card-header"># {{order.reference}}</h5>
+            <div class="card-body">
+                <h5 class="card-title">{{order.Address}}</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <p class="card-text text-muted mt-4">Status</p>
+                <a href="#" class="btn btn-info">{{order.status}}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
