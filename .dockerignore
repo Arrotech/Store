@@ -5,3 +5,4 @@ flask.pem
 flask.ppk
 .vscode/
 .pytest_cache/
+.env
