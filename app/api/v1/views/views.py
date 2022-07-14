@@ -5,8 +5,8 @@ from flask_login import current_user
 from flask_babel import _, get_locale
 
 from app.api.v1 import store_v1
-from app.api.v1.forms.forms import AddProduct, AddToCart, Checkout, UpdateStatus, SearchForm
-from app.api.v1.models.models import Product, Order, OrderItem
+from app.api.v1.forms.forms import AddProduct, AddToCart, Checkout, UpdateStatus, SearchForm, AddressForm
+from app.api.v1.models.models import Product, Order, OrderItem, Address, User
 from app.extensions import db
 from app.api.v1.models.models import Product
 from app.api.v1.services.mail import send_email
@@ -61,6 +61,21 @@ def order_items():
     return redirect(url_for('store_v1.index'))
 
 
+# get specific order items
+@store_v1.route('/order-items/<int:id>')
+def order_item(id):
+    """Home page."""
+    order_item = OrderItem.query.filter_by(id=id).first()
+    product = Product.query.filter_by(id=order_item.product_id).first()
+    order = Order.query.filter_by(id=order_item.order_id).first()
+    address = Address.query.filter_by(id=order.address_id).first()
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            return render_template('user-order-detail.html', order_item=order_item, user=current_user, product=product, order=order, address=address)
+        return redirect(url_for('store_v1.dashboard'))
+    return redirect(url_for('store_v1.index'))
+
+
 @store_v1.route('/dashboard')
 def dashboard():
     """Home page."""
@@ -95,15 +110,37 @@ def add_product():
     return redirect(url_for('store_v1.login'))
 
 
-@store_v1.route('/product/<id>', methods=['POST', 'GET'])
+@store_v1.route('/product/<int:id>')
+def get_product(id):
+    form = AddProduct()
+    product = Product.query.filter_by(id=id).first()
+    return render_template('product.html', product=product, user=current_user, form=form)
+
+
+# get product by category
+@store_v1.route('/category/<string:category>')
+def get_products_by_category(category):
+    products = Product.query.filter_by(category=category).all()
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            return render_template('products.html', products=products, user=current_user)
+        return redirect(url_for('store_v1.dashboard'))
+    return render_template('products.html', products=products)
+
+
+@store_v1.route('/view-product/<id>', methods=['POST', 'GET'])
 def product(id):
     """View single product."""
     product = Product.query.filter_by(id=id).first()
     form = AddToCart()
-    return render_template('view-product.html', product=product, form=form, user=current_user)
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            return render_template('view-product.html', product=product, form=form, user=current_user)
+        return redirect(url_for('store_v1.dashboard'))
+    return render_template('view-product.html', product=product, form=form)
 
 
-@store_v1.route('/update-product/<id>', methods=['POST', 'GET'])
+@store_v1.route('/update-product/<int:id>', methods=['POST', 'GET'])
 def update_product(id):
     """Update a product."""
     if current_user.is_authenticated:
@@ -113,20 +150,25 @@ def update_product(id):
             if add_product_form.validate_on_submit():
                 if add_product_form.image.data:
                     picture_file = upload(add_product_form.image.data)
-                    product.image = picture_file
+                    product.image = os.environ.get('AWS_DOMAIN')+picture_file
                 product.name = add_product_form.name.data
-                product.category = add_product_form.category.data
+                default_category = 'No category'
+                product.category = request.form.get(
+                    'category', default_category)
                 product.price = add_product_form.price.data
                 product.stock = add_product_form.stock.data
-                product.description = add_product_form.description.data
+                default_description = 'No description'
+                product.description = request.form.get(
+                    'description', default_description)
                 db.session.commit()
-                return redirect(url_for('store_v1.dashboard'))
-            return render_template('dashboard.html', add_product_form=add_product_form, product=product, user=current_user)
+                message = "Product added successfully"
+                return render_template('product.html', product=product, user=current_user, form=add_product_form, success_message=message)
+            return render_template('product.html', product=product, user=current_user, form=add_product_form)
         return redirect(url_for('store_v1.index'))
     return redirect(url_for('store_v1.login'))
 
 
-@store_v1.route('/delete-product/<id>', methods=['POST'])
+@store_v1.route('/delete-product/<id>', methods=['POST', 'GET'])
 def delete_product(id):
     """Delete a product."""
     if current_user.is_authenticated:
@@ -166,7 +208,11 @@ def quick_add(id):
 @store_v1.route('/cart')
 def cart():
     products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
-    return render_template('cart.html', products=products, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, user=current_user)
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            return render_template('cart.html', products=products, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, user=current_user)
+        return redirect(url_for('store_v1.dashboard'))
+    return render_template('cart.html', products=products, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total)
 
 
 @store_v1.route('/remove-from-cart/<index>')
@@ -182,6 +228,8 @@ def checkout():
     if current_user.is_authenticated:
         if current_user.role == 'user':
             if current_user.email_confirmed == True:
+                addresses = Address.query.filter_by(
+                    user_id=current_user.id).all()
                 form = Checkout()
                 products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
                 if form.validate_on_submit():
@@ -189,6 +237,12 @@ def checkout():
                     form.populate_obj(order)
                     order.reference = ''.join(
                         [random.choice('ABCDE') for _ in range(5)])
+                    default_address = 'No address'
+                    address = request.form.get(
+                        'address', default_address)
+                    address_to_be_added = Address.query.filter_by(
+                        address=address).first()
+                    order.address_id = address_to_be_added.id
 
                     for product in products:
                         order_item = OrderItem(
@@ -218,7 +272,7 @@ def checkout():
 
                     return redirect(url_for('store_v1.index'))
 
-                return render_template('checkout.html', form=form, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, user=current_user)
+                return render_template('checkout.html', form=form, addresses=addresses, grand_total=grand_total, grand_total_plus_shipping=grand_total_plus_shipping, quantity_total=quantity_total, user=current_user)
             h1 = "Bad request"
             p = "Please confirm your email address first before you checkout this order."
             return render_template('errors.html', h1=h1, p=p)
@@ -244,7 +298,25 @@ def update_status(id):
 @store_v1.route('/view-order/<order_id>')
 def view_order(order_id):
     order = Order.query.filter_by(id=int(order_id)).first()
-    return render_template('view-order.html', order=order, user=current_user)
+    address = Address.query.filter_by(id=order.address_id).first()
+    user = User.query.filter_by(id=order.user_id).first()
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            return render_template('view-order.html', order=order, address=address, user=user)
+        return render_template('user-order.html', order=order, user=current_user, address=address)
+    return redirect(url_for('store_v1.login'))
+
+# delete order by id
+@store_v1.route('/delete-order/<order_id>')
+def delete_order(order_id):
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            order = Order.query.filter_by(id=int(order_id)).first()
+            db.session.delete(order)
+            db.session.commit()
+            return redirect(url_for('store_v1.dashboard'))
+        return redirect(url_for('store_v1.index'))
+    return redirect(url_for('store_v1.login'))
 
 
 def handle_cart():
@@ -265,6 +337,69 @@ def handle_cart():
 
     grand_total_plus_shipping = grand_total + 1000
     return products, grand_total, grand_total_plus_shipping, quantity_total
+
+
+@store_v1.route('/addresses')
+def addresses():
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            addresses = Address.query.filter_by(user_id=current_user.id).all()
+            return render_template('addresses.html', addresses=addresses, user=current_user)
+        return redirect(url_for('store_v1.dashboard'))
+    return redirect(url_for('store_v1.login'))
+
+
+@store_v1.route('/add-address', methods=['GET', 'POST'])
+def add_address():
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            form = AddressForm()
+            if form.validate_on_submit():
+                address = Address(
+                    address=form.address.data,
+                    city=form.city.data,
+                    state=form.state.data,
+                    country=form.country.data,
+                    zip_code=form.zip_code.data,
+                    user_id=current_user.id,
+                )
+                db.session.add(address)
+                db.session.commit()
+                return redirect(url_for('store_v1.addresses'))
+            return render_template('add_new_address.html', form=form, user=current_user)
+        return redirect(url_for('store_v1.dashboard'))
+    return redirect(url_for('store_v1.login'))
+
+
+@store_v1.route('/edit-address/<id>', methods=['GET', 'POST'])
+def edit_address(id):
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            address = Address.query.filter_by(id=id).first()
+            form = AddressForm()
+            if form.validate_on_submit():
+                address.address = form.address.data
+                address.city = form.city.data
+                address.state = form.state.data
+                address.country = form.country.data
+                address.zip_code = form.zip_code.data
+                db.session.commit()
+                return redirect(url_for('store_v1.addresses'))
+            return render_template('edit_address.html', form=form, address=address)
+        return redirect(url_for('store_v1.dashboard'))
+    return redirect(url_for('store_v1.login'))
+
+
+@store_v1.route('/delete-address/<id>')
+def delete_address(id):
+    if current_user.is_authenticated:
+        if current_user.role == 'user':
+            address = Address.query.filter_by(id=id).first()
+            db.session.delete(address)
+            db.session.commit()
+            return redirect(url_for('store_v1.addresses'))
+        return redirect(url_for('store_v1.dashboard'))
+    return redirect(url_for('store_v1.login'))
 
 
 def allowed_file(filename):

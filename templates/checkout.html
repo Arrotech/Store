@@ -51,32 +51,12 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="product_description">Address</label>
                         <div class="col-md-4">
-                            {{ form.address(class="form-control")}}
-                        </div>
-                    </div>
-
-                    <!-- Textarea -->
-                    <div class="form-group">
-                        <label class="col-md-4 control-label" for="product_description">City</label>
-                        <div class="col-md-4">
-                            {{ form.city(class="form-control")}}
-                        </div>
-                    </div>
-
-                    <!-- Textarea -->
-                    <div class="form-group">
-                        <label class="col-md-4 control-label" for="product_description">State</label>
-                        <div class="col-md-4">
-                            {{ form.state(class="form-control")}}
-                        </div>
-                    </div>
-
-
-                    <!-- Textarea -->
-                    <div class="form-group">
-                        <label class="col-md-4 control-label" for="product_description">Country</label>
-                        <div class="col-md-4">
-                            {{ form.country(class="form-control")}}
+                            <select class="form-select" aria-label="Default select example" name="address">
+                                <option value="" selected>Select address...</option>
+                                {% for address in addresses %}
+                                <option value="{{address.address}}">{{address.address}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
@@ -101,7 +81,7 @@
                         <label class="col-md-4 control-label" for="singlebutton"></label>
                         <div class="col-md-4">
                             <button type="submit" id="singlebutton" name="singlebutton"
-                                class="btn btn-primary">Submit</button>
+                                class="btn btn-primary bg-info rounded border-0 shadow-none">Submit</button>
                         </div>
                     </div>
 

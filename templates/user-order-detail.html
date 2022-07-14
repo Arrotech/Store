@@ -1,0 +1,114 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="col-lg-9 shadow p-3 mb-5 bg-white rounded mt-5">
+    <div class="row">
+        <div class="col-md-3"><img class="card-img-top rounded"
+                style="border-radius: 5px; object-fit: contain; border: none !important;" src="{{product.image}}"
+                alt="..." /></div>
+        <div class="col-md-7">
+            <h4>{{ product.name}}</h4>
+            <p class="text-muted">{{ product.description }}</p>
+            <p>{{ address.address }}</p>
+            {% if order.status == 'Pending' %}
+            <td><a href="#" class=" bg-warning text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Complete' %}
+            <td><a href="#" class=" bg-success text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Declined' %}
+            <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Returned' %}
+            <td><a href="#" class=" bg-info text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Cancelled' %}
+            <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'On Hold' %}
+            <td><a href="#" class=" bg-warning text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Shipped' %}
+            <td><a href="#" class="text-light p-1 rounded" data-toggle="modal" data-target="#updateOrderStatusModal"
+                    style="cursor: pointer; text-decoration: none; background-color:#5D3FD3">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'In Transit' %}
+            <td><a href="#" class=" bg-info text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Expired' %}
+            <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% elif order.status == 'Fraud' %}
+            <td><a href="#" class=" bg-danger text-light p-1 rounded" data-toggle="modal"
+                    data-target="#updateOrderStatusModal" style="cursor: pointer; text-decoration: none;">{{
+                    order.status }}</a></td>
+            {% endif %}
+        </div>
+        <div class="col-md-2">
+            <p><strong class="fw-bolder">QTY:</strong> {{ order_item.quantity }}</p>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div role="tabpanel">
+            <ul class="nav" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active shadow-none border-0" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping"
+                        type="button" role="tab" aria-controls="shipping" aria-selected="true">Shipping Info</button>
+                    <!-- <a href="#shipping" aria-controls="shipping" role="tab" data-toggle="tab">Shipping Info</a> -->
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link shadow-none border-0" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
+                        type="button" role="tab" aria-controls="details" aria-selected="false">Payment
+                        Details</button>
+                    <!-- <a href="#details" aria-controls="details" role="tab" data-toggle="tab">Personal Details</a> -->
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active pt-4 ml-4" id="shipping" role="tabpanel"
+                    aria-labelledby="shipping-tab">
+                    <p>
+                        <i class="glyphicon glyphicon-map-marker"></i> ADDRESS: <strong>{{ address.address
+                            }}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-th"></i> CITY: <strong>{{ address.city }}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-th"></i> STATE: <strong>{{ address.state }}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-flag"></i> COUNTRY: <strong>{{ address.country }}</strong>
+                    </p>
+                </div>
+                <div class="tab-pane fade pt-4 ml-4" id="details" role="tabpanel" aria-labelledby="details-tab">
+                    <p>
+                        <i class="glyphicon glyphicon-user"></i> PAYMENT METHOD: <strong>{{ order.payment_type }}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-phone-alt"></i> PHONE NUMBER: <strong>{{ user.phone_number
+                            }}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-envelope"></i> PRODUCT PRICE: <strong>&dollar;{{ product.price/100 }}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-envelope"></i> TOTAL PRICE: <strong>&dollar;{{ (product.price/100 * order_item.quantity)|round(2)}}</strong>
+                    </p>
+                    <p>
+                        <i class="glyphicon glyphicon-envelope"></i> QTY: <strong>{{ order_item.quantity }}</strong> 
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

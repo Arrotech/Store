@@ -66,7 +66,7 @@
                         {% endif %}
                     </div>
                     <div class="col-md-3">
-                        <a href="#" class="text-warning p-1 rounded">More information</a>
+                        <a href={{ url_for('store_v1.order_item', id=order_item.id)}} class="text-info p-1 rounded">More information</a>
                     </div>
                 </div>
             </div>

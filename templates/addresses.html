@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="col-lg-9 shadow p-3 mb-5 bg-white rounded"
+    style="background-color: #fff !important; margin-top: 96px; padding: 8px; border-radius: 5px;">
+    <div class="container">
+        <div class="row">
+            <legend>Addresses <a href={{ url_for( 'store_v1.add_address' ) }} class="btn text-info btn-xs"
+                    style="margin-top:-6px !important;"><i class="fa fa-add"></i></a></legend>
+            <table class="table table-hover mt-5 h-50 shadow-sm p-3 mb-5 bg-white rounded">
+                <thead>
+                    <tr>
+                        <th scope="col">Address</th>
+                        <th scope="col">City</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Zip</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for address in addresses %}
+                    <tr>
+                        <td>{{ address.address }}</td>
+                        <td>{{ address.city }}</td>
+                        <td>{{ address.state }}</td>
+                        <td>{{ address.country }}</td>
+                        <td>{{ address.zip_code }}</td>
+                        <td><a href={{ url_for('store_v1.edit_address', id=address.id)}} class="btn text-info btn-xs"
+                                style="margin-top: -10px !important;"><i class="fa fa-edit"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

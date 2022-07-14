@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery</title>
-    <link rel="stylesheet" href="{{url_for('.static', filename='css/layout.css')}}">
+    <title>Online Store</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -19,22 +18,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{url_for('.static', filename='css/layout.css')}}">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
-        <script src="{{ url_for('.static', filename='js/bootstrap.bundle.min.js') }}"></script>
-        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
-        <link rel="stylesheet" href="{{url_for('.static', filename='css/product_detail.css')}}">
+    <link rel="stylesheet" href="{{url_for('.static', filename='css/profile.css')}}">
+    <link rel="stylesheet" href="{{url_for('.static', filename='css/custom.css')}}">
 
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top text-light" style="background-color: #000;">
+    <nav class="navbar navbar-expand-lg bg-info fixed-top text-light border">
         <div class="container-fluid">
-            <a class="navbar-brand text-light" href="{{url_for('store_v1.index')}}">Grocery</a>
+            <a class="navbar-brand text-light" href="{{url_for('store_v1.index')}}">
+                <h3>Cynthia Store</h3>
+            </a>
             <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -46,31 +45,42 @@
                             href="{{url_for('store_v1.index')}}">Home</a>
                     </li>
                 </ul>
+                <form class="form-inline mr-2 rounded" style="width: 500px !important;">
+                    {% if g.search_form %}
+                    <form class="navbar-form navbar-left search-form rounded" method="get"
+                        action="{{ url_for('store_v1.search') }}">
+                        <div class="form-group rounded" style="width: 500px !important;">
+                            {{ g.search_form.q(class='form-control w-100 rounded shadow-none',
+                            placeholder=g.search_form.q.label.text) }}
+                        </div>
+                    </form>
+                    {% endif %}
+                </form>
                 <form class="form-inline my-2 my-lg-0">
-                    <a href="{{ url_for('store_v1.cart')}}" style="color: orange !important; text-decoration: none;"><i
-                            class="fa fa-shopping-cart" aria-hidden="true"></i> View cart</a>
+                    <a href="{{ url_for('store_v1.cart')}}" class="text-light text-decoration-none"><i
+                            class="fa fa-shopping-cart" aria-hidden="true"></i> Cart</a>
                 </form>
                 <form class="form-inline my-2 my-lg-0 ml-4">
                     {% if user %}
                     <!-- Example single danger button -->
-                    <a class="text-warning" href="{{ url_for('store_v1.logout')}}">Logout</a>
+                    <a class="text-light text-decoration-none" href="{{ url_for('store_v1.logout')}}">Logout</a>
                     {% else %}
                     <a href="{{ url_for('store_v1.signup')}}"
-                        style="color: orange !important; text-decoration: none;"><i class="fa fa-user"
+                        class="btn btn-primary bg-white text-dark rounded shadow-none border-0"><i class="fa fa-user"
                             aria-hidden="true"></i> Sign Up/Login</a>
                     {% endif %}
                 </form>
             </div>
         </div>
     </nav>
-    <div class="container-fluid h-100 text-dark" style="margin-top:70px; margin-bottom:40px;">
+    <div class="container-fluid h-100 text-dark" style="margin-top:90px; margin-bottom:40px;">
 
         {% block content %}
 
         {% endblock %}
     </div>
     <!-- Footer -->
-    <footer class="page-footer font-small mdb-color lighten-3 pt-4" style="background-color: #000;">
+    <footer class="page-footer font-small mdb-color lighten-3 pt-4 bg-info">
 
         <!-- Footer Links -->
         <div class="container text-center text-md-left">
