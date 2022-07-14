@@ -38,7 +38,7 @@ class AddProduct(FlaskForm):
 
     name = StringField('Name')
     category = SelectField('Category', choices=[('Wear', 'Wear'), ('Electronics', 'Electronics'), (
-        'Food', 'Food'), ('Drinks', 'Drinks'), ('Grocery', 'Grocery'), ('Furniture', 'Furniture')])
+        'Food', 'Food'), ('Drinks', 'Drinks'), ('Grocery', 'Grocery'), ('Furniture', 'Furniture'), ('Kitchen Accessories', 'Kitchen Accessories'), ('Bathroom Accessories', 'Bathroom Accessories'), ('Living Room Accessories', 'Living Room Accessories'), ('Bedroom Accessories', 'Bedroom Accessories')])
     price = IntegerField('Price')
     stock = IntegerField('Quantity')
     description = TextAreaField('Description')
@@ -60,14 +60,9 @@ class Checkout(FlaskForm):
     last_name = StringField('Last Name')
     phone_number = StringField('Phone Number')
     email = StringField('Email')
-    address = StringField('Address')
-    city = StringField('City')
-    state = SelectField('State', choices=[('NAK', 'Nakuru'), ('NAI', 'Nairobi'), (
-        'MOM', 'Mombasa'), ('KIS', 'Kisumu'), ('KAK', 'Kakamega')])
-    country = SelectField('Country', choices=[(
-        'KE', 'Kenya'), ('USA', 'United States'), ('UK', 'United Kingdom'), ('CHI', 'China')])
+    address_id = HiddenField('Address ID')
     payment_type = SelectField('Payment Type', choices=[
-                               ('CK', 'Check'), ('WT', 'Wire Transfer')])
+                               ('CK', 'Check'), ('WT', 'Wire Transfer'), ('CC', 'Credit Card'), ('MP', 'MPESA')])
     user_id = HiddenField('User ID')
 
 
@@ -79,7 +74,8 @@ class UpdateStatus(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    q = StringField(_l('Search'), validators=[DataRequired()])
+    q = StringField(_l('Search products, categories...'),
+                    validators=[DataRequired()])
 
     def __init__(self, *args, **kwargs):
         if 'formdata' not in kwargs:
@@ -87,3 +83,16 @@ class SearchForm(FlaskForm):
         if 'meta' not in kwargs:
             kwargs['meta'] = {'csrf': False}
         super(SearchForm, self).__init__(*args, **kwargs)
+
+
+class AddressForm(FlaskForm):
+    """Address form."""
+
+    address = StringField('Address')
+    city = StringField('City')
+    state = SelectField('State', choices=[('NAK', 'Nakuru'), ('NAI', 'Nairobi'), (
+        'MOM', 'Mombasa'), ('KIS', 'Kisumu'), ('KAK', 'Kakamega')])
+    country = SelectField('Country', choices=[(
+        'KE', 'Kenya'), ('USA', 'United States'), ('UK', 'United Kingdom'), ('CHI', 'China')])
+    zip_code = StringField('Zip Code')
+    user_id = HiddenField('User ID')

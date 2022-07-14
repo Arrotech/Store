@@ -37,12 +37,12 @@
                         <div class="portlet light bordered">
                             <div>
                                 <div class="margin-top-20 profile-desc-link">
-                                    <i class="fa fa-envelope" style="color:#EF7921;"></i>
+                                    <i class="fa fa-envelope text-info"></i>
                                     <a href="https://www.twitter.com/jasondavisfl/"
                                         class="text-muted">{{user.email|truncate(20)}}</a>
                                 </div>
                                 <div class="margin-top-20 profile-desc-link">
-                                    <i class="fa fa-phone" style="color:#EF7921;"></i>
+                                    <i class="fa fa-phone text-info"></i>
                                     <a href="https://www.facebook.com/" class="text-muted">{{user.phone_number}}</a>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                                 <label for="First Name">First
                                     Name</label>
                                 <div>
-                                    {{ update_profile_form.first_name(class="form-control", value=user.first_name)
+                                    {{ update_profile_form.first_name(class="form-control rounded", value=user.first_name)
                                     }}
                                 </div>
                             </div>
@@ -67,28 +67,28 @@
                                 <label for="Middle Name">Middle
                                     Name</label>
                                 <div>
-                                    {{ update_profile_form.middle_name(class="form-control",
+                                    {{ update_profile_form.middle_name(class="form-control rounded",
                                     value=user.middle_name)}}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="Last Name">Last Name</label>
                                 <div>
-                                    {{ update_profile_form.last_name(class="form-control",
+                                    {{ update_profile_form.last_name(class="form-control rounded",
                                     value=user.last_name)}}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <div>
-                                    {{ update_profile_form.email(class="form-control",
+                                    {{ update_profile_form.email(class="form-control rounded",
                                     value=user.email)}}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
                                 <div>
-                                    {{ update_profile_form.phone_number(class="form-control",
+                                    {{ update_profile_form.phone_number(class="form-control rounded",
                                     value=user.phone_number)}}
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                                 <label for="singlebutton"></label>
                                 <div>
                                     <button id="singlebutton" name="singlebutton"
-                                        class="btn btn-info text-light">Update</button>
+                                        class="btn btn-info text-light rounded shadow-none border-0">Update</button>
                                 </div>
                             </div>
                     </div>

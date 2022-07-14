@@ -65,6 +65,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(255), nullable=False, default="user")
     orders = db.relationship(
         'Order', backref='user', lazy=True,  passive_deletes=True)
+    addresses = db.relationship(
+        'Address', backref='user', lazy=True,  passive_deletes=True)
 
     def __init__(self, first_name, middle_name, last_name, email, password, phone_number):
         super().__init__()
@@ -101,6 +103,30 @@ class Product(SearchableMixin, db.Model):
         'OrderItem', backref='product', lazy=True,  passive_deletes=True)
 
 
+class Address(db.Model):
+    """Address Model."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete="CASCADE"), nullable=False)
+    address = db.Column(db.String(100))
+    city = db.Column(db.String(100))
+    state = db.Column(db.String(20))
+    country = db.Column(db.String(20))
+    zip_code = db.Column(db.Integer)
+    orders = db.relationship(
+        'Order', backref='address', lazy=True,  passive_deletes=True)
+
+    def __init__(self, user_id, address, city, state, country, zip_code):
+        super().__init__()
+        self.user_id = user_id
+        self.address = address
+        self.city = city
+        self.state = state
+        self.country = country
+        self.zip_code = zip_code
+
+
 class Order(db.Model):
     """Order Model."""
 
@@ -110,10 +136,8 @@ class Order(db.Model):
     last_name = db.Column(db.String(20))
     phone_number = db.Column(db.Integer)
     email = db.Column(db.String(50))
-    address = db.Column(db.String(100))
-    city = db.Column(db.String(100))
-    state = db.Column(db.String(20))
-    country = db.Column(db.String(20))
+    address_id = db.Column(db.Integer, db.ForeignKey(
+        'address.id', ondelete="CASCADE"), nullable=False)
     status = db.Column(db.String(10), nullable=False, default="Pending")
     payment_type = db.Column(db.String(10))
     user_id = db.Column(db.Integer, db.ForeignKey(

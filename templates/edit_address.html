@@ -1,0 +1,69 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="col-lg-9 shadow p-3 mb-5 bg-white rounded"
+    style="background-color: #fff !important; margin-top: 96px; padding: 8px; border-radius: 5px;">
+    <div class="container">
+        <form class="form-horizontal" action="{{url_for('store_v1.edit_address', id=address.id)}}" method="POST"
+            enctype="multipart/form-data">
+            <fieldset>
+
+                {{ form.csrf_token }}
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="address">Address</label>
+                    <div class="col-md-4">
+                        {{ form.address(class="form-control", value=address.address)}}
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="city">City</label>
+                    <div class="col-md-4">
+                        {{ form.city(class="form-control", value=address.city)}}
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="state">State</label>
+                    <div class="col-md-4">
+                        {{ form.state(class="form-control", value=address.state)}}
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="country">Country</label>
+                    <div class="col-md-4">
+                        {{ form.country(class="form-control", value=address.country)}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="zip_code">Zip Code</label>
+                    <div class="col-md-4">
+                        {{ form.zip_code(class="form-control", value=address.zip_code)}}
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="singlebutton"></label>
+                    <div class="col-md-4">
+                        <button id="singlebutton" name="singlebutton" class="btn btn-sm btn-primary rounded">Update
+                            Address</button>
+                        <a href={{ url_for('store_v1.delete_address', id=address.id)}}
+                            class="btn btn-sm btn-danger rounded">Delete</a>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
