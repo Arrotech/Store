@@ -19,6 +19,8 @@ class Config(object):
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     ELASTICSEARCH_URL = os.environ.get(
         'ELASTICSEARCH_URL', 'http://localhost:9200')
+    ELASTICSEARCH_HOST = os.environ.get('ELASTICSEARCH_HOST', 'localhost')
+    ELASTICSEARCH_PORT = os.environ.get('ELASTICSEARCH_PORT', '9200')
     LANGUAGES = os.environ.get('LANGUAGES')
     PRODUCTS_PER_PAGE = int(os.environ.get('PRODUCTS_PER_PAGE', '3'))
 
