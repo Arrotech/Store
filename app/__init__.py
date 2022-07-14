@@ -12,7 +12,7 @@ def create_app(config_name='production'):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
 
-    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']], headers={'Accept': 'application/vnd.elasticsearch+json', 'Content-Type': 'application/vnd.elasticsearch+json'}) \
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
 
     from app.api.v1.models import models
