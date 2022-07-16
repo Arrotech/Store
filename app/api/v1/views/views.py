@@ -207,6 +207,8 @@ def quick_add(id):
 
 @store_v1.route('/cart')
 def cart():
+    if 'cart' not in session:
+        session['cart'] = []
     products, grand_total, grand_total_plus_shipping, quantity_total = handle_cart()
     if current_user.is_authenticated:
         if current_user.role == 'user':
