@@ -62,8 +62,7 @@ class Checkout(FlaskForm):
     phone_number = StringField('Phone Number')
     email = StringField('Email')
     address_id = HiddenField('Address ID')
-    payment_type = SelectField('Payment Type', choices=[
-                               ('CK', 'Check'), ('WT', 'Wire Transfer'), ('CC', 'Credit Card'), ('MP', 'MPESA')])
+    payment_type = SelectField('Payment Type', choices=[('MPESA', 'MPESA')])
     user_id = HiddenField('User ID')
 
 

@@ -1,7 +1,7 @@
 {% extends 'home.html' %}
 {% block content %}
 <div class="container">
-    <div class="card">
+    <div class="card shadow p-3 mb-5 bg-white rounded">
         <div class="container-fliud">
             <div class="wrapper row">
                 <div class="preview col-md-6">
@@ -58,7 +58,7 @@
                         {% endif %}
                         <div class="action">
                             {% if product.stock > 0%}
-                            <button class="add-to-cart btn btn-default" type="submit">add to cart</button>
+                            <button class="btn btn-default shadow-none border-0 btn-info rounded" type="submit">add to cart</button>
 
                             <button class="like btn btn-default" type="button"><span
                                     class="fa fa-heart"></span></button>
