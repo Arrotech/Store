@@ -4,44 +4,45 @@ from wtforms import StringField, IntegerField, TextAreaField, HiddenField, Selec
 from flask_wtf.file import FileField, FileAllowed, DataRequired
 from flask_uploads import IMAGES
 from flask_babel import lazy_gettext as _l
+from wtforms.validators import ValidationError, DataRequired
 
 
 class UserForm(FlaskForm):
-    first_name = StringField('First Name')
+    first_name = StringField('First Name', validators=[DataRequired()])
     middle_name = StringField('Middle Name')
     last_name = StringField('Last Name')
-    email = StringField('Email')
-    password = PasswordField('Password')
-    confirm_password = PasswordField('Confirm Password')
-    phone_number = StringField('Phone Number')
+    email = StringField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
+    phone_number = StringField('Phone Number', validators=[DataRequired()])
     avatar = FileField('Image', validators=[
         FileAllowed(IMAGES, 'only images are accepted.')])
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email')
-    password = PasswordField('Password')
+    email = StringField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
 
 
 class PasswordResetEmailForm(FlaskForm):
-    email = StringField('Email')
+    email = StringField('Email', validators=[DataRequired()])
 
 
 class PasswordResetForm(FlaskForm):
-    password = PasswordField('Password')
-    confirm_password = PasswordField('Confirm Password')
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
 
 
 class AddProduct(FlaskForm):
     """Add new product form."""
 
-    name = StringField('Name')
+    name = StringField('Name', validators=[DataRequired()])
     category = SelectField('Category', choices=[('Wear', 'Wear'), ('Electronics', 'Electronics'), (
         'Food', 'Food'), ('Drinks', 'Drinks'), ('Grocery', 'Grocery'), ('Furniture', 'Furniture'), ('Kitchen Accessories', 'Kitchen Accessories'), ('Bathroom Accessories', 'Bathroom Accessories'), ('Living Room Accessories', 'Living Room Accessories'), ('Bedroom Accessories', 'Bedroom Accessories')])
-    price = IntegerField('Price')
-    stock = IntegerField('Quantity')
-    description = TextAreaField('Description')
+    price = IntegerField('Price', validators=[DataRequired()])
+    stock = IntegerField('Quantity', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
     image = FileField('Image', validators=[
                       FileAllowed(IMAGES, 'only images are accepted.')])
 
@@ -49,7 +50,7 @@ class AddProduct(FlaskForm):
 class AddToCart(FlaskForm):
     """Add to cart form."""
 
-    quantity = IntegerField('Quantity')
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
     id = HiddenField('ID')
 
 
@@ -88,11 +89,11 @@ class SearchForm(FlaskForm):
 class AddressForm(FlaskForm):
     """Address form."""
 
-    address = StringField('Address')
-    city = StringField('City')
+    address = StringField('Address', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
     state = SelectField('State', choices=[('NAK', 'Nakuru'), ('NAI', 'Nairobi'), (
-        'MOM', 'Mombasa'), ('KIS', 'Kisumu'), ('KAK', 'Kakamega')])
+        'MOM', 'Mombasa'), ('KIS', 'Kisumu'), ('KAK', 'Kakamega')], validators=[DataRequired()])
     country = SelectField('Country', choices=[(
-        'KE', 'Kenya'), ('USA', 'United States'), ('UK', 'United Kingdom'), ('CHI', 'China')])
-    zip_code = StringField('Zip Code')
+        'KE', 'Kenya'), ('USA', 'United States'), ('UK', 'United Kingdom'), ('CHI', 'China')], validators=[DataRequired()])
+    zip_code = StringField('Zip Code', validators=[DataRequired()])
     user_id = HiddenField('User ID')
